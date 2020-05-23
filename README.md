@@ -4,14 +4,14 @@ usage: fih.py [-h] [-N NAME] [-I INITIAL] [-S START] [-T TO] [-M MAKE] [-C CHECK
 File Iterator and Hasher - checks for duplicates, then moves and renames files in numerical order  
 
 **arguments:**  
-  -h, --help -> show this help message and exit
-  -N NAME, --name NAME -> sets the name of the output
-  -I INITIAL, --initial INITIAL -> sets the initial value
-  -S START, --start START -> from this location, defaults to renamer.py's current location
-  -T TO, --to TO -> to this location **mandatory**
-  -M MAKE, --make MAKE -> create new folder if not found, Y for yes
-  -C CHECK, --check CHECK -> test for all duplicates, Y for yes
-  -D DELIM, --delim DELIM -> check and correct for delims and non-zero fronted numbering, Y for yes
+  -h, --help -> show this help message and exit  
+  -N NAME, --name NAME -> sets the name of the output  
+  -I INITIAL, --initial INITIAL -> sets the initial value  
+  -S START, --start START -> from this location, defaults to renamer.py's current location  
+  -T TO, --to TO -> to this location **mandatory**  
+  -M MAKE, --make MAKE -> create new folder if not found, Y for yes  
+  -C CHECK, --check CHECK -> test for all duplicates, Y for yes  
+  -D DELIM, --delim DELIM -> check and correct for delims and non-zero fronted numbering, Y for yes  
 
 
 **TODO**  
