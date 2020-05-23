@@ -3,22 +3,18 @@ usage: fih.py [-h] [-N NAME] [-I INITIAL] [-S START] [-T TO] [-M MAKE] [-C CHECK
 
 File Iterator and Hasher - checks for duplicates, then moves and renames files in numerical order  
 
-optional arguments:  
-  -h, --help            show this help message and exit  
-  -N NAME, --name NAME  sets the name of the output  
-  -I INITIAL, --initial INITIAL  
-                        sets the initial value  
-  -S START, --start START  
-                        from this location, defaults to renamer.py's current location  
-  -T TO, --to TO        to this location  
-  -M MAKE, --make MAKE  create new folder if not found? Y for yes  
-  -C CHECK, --check CHECK  
-                        test for all duplicates, Y for yes  
-  -D DELIM, --delim DELIM  
-                        check and correct for delims and non-zero fronted numbering, Y for yes  
+**arguments:**  
+  -h, --help -> show this help message and exit
+  -N NAME, --name NAME -> sets the name of the output
+  -I INITIAL, --initial INITIAL -> sets the initial value
+  -S START, --start START -> from this location, defaults to renamer.py's current location
+  -T TO, --to TO -> to this location **mandatory**
+  -M MAKE, --make MAKE -> create new folder if not found, Y for yes
+  -C CHECK, --check CHECK -> test for all duplicates, Y for yes
+  -D DELIM, --delim DELIM -> check and correct for delims and non-zero fronted numbering, Y for yes
 
 
-*TODO*  
+**TODO**  
 
 1. allow a -t test option to run fih-test.py  
 2. currently handles up to 1000 files because I'm lazy.  Need to make it work with arbitrary numbers  
