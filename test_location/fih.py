@@ -18,7 +18,7 @@ parser.add_argument("-N", "--name", help = "sets the name of the output", defaul
 parser.add_argument("-I", "--initial", help = "sets the initial value", type = int, default = 0)
 parser.add_argument("-S", "--start", help = "from this location, defaults to renamer.py's current location")
 parser.add_argument("-T", "--to", help = "to this location")
-parser.add_argument("-M", "--make", help = "create new folder if not found? Y for yes", default = '')
+parser.add_argument("-M", "--make", help = "create new folder if not found, Y for yes", default = '')
 parser.add_argument("-C", "--check", help = "test for all duplicates, Y for yes", default = '')
 parser.add_argument("-D", "--delim", help = "check and correct for delims and non-zero fronted numbering, Y for yes", default = '')
 #parser.add_argument("-t", "--test", help = "run automated check on components to ensure functionality") #TODO, need to use this to call fih-test.py?
@@ -87,9 +87,9 @@ def check_for_duplicates(local_files):
                 hasher.update(buf)
                 buf = hashFile.read(BLOCKSIZE)
             if hasher.hexdigest() not in hashes:
-                hashes[hasher.hexdigest()] = os.path.join(root,tfile)
+                hashes[hasher.hexdigest()] = os.path.join(targetLocation,tfile)
             else:
-                print(hashes[hasher.hexdigest()] + " <-Old file New file-> " + os.path.join(root,tfile))
+                print(hashes[hasher.hexdigest()] + " <-Old file New file-> " + os.path.join(targetLocation,tfile))
 
     for file in local_files:
         if not os.path.isdir(file):
@@ -145,7 +145,7 @@ def main():
                         elif part == parts[-1]:
                             new_name = new_name + part
                         elif part.find("0") == -1:
-                            try:
+                            try: #should make this portion arbitrary as well.  Limit of 10 isn't guarenteed if there's more than 100 downloaded files
                                 if int(part)<10:
                                     new_name = new_name + "0" + part + delim
                                 else:
@@ -168,7 +168,7 @@ def main():
                 new_name=new_name+"0"
             if start < 100:
                 new_name=new_name+"0"
-            parts = file.split(".")  # [abc, 2000.jpg]
+            parts = file.split(".")  
             new_name =new_name+str(start)+"."+ parts[-1]
             if file != os.path.basename(__file__) and not os.path.isdir(file) and file != "fih-test.py":
                 if curr[num]:

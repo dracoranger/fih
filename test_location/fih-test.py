@@ -1,4 +1,4 @@
-#renamer.py tester
+#fih.py tester
 
 import os 
 import glob
@@ -13,14 +13,15 @@ if os.name == "nt":
 print(os.curdir)
 testLocation = os.curdir
 
-tests = ["python renamer.py", #0 test default error output
-         "python renamer.py -T " + testLocation + fileSeparator + "end",  #1 move files from folder to end 
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -I 5", #2 move files from folder to end, starting at #5 
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start", #3 move files from start to end 
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -M Y", #4 move files from start to end, but make the end
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -C Y", #5 move files from start to end but test and output duplicates 
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -D Y", #6 move files from start to end but fix incorrect delimination
-         "python renamer.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -N Successful_test_" #7 move files from start to end but rename from default
+tests = ["python fih.py", #0 test default error output
+         "python fih.py -T " + testLocation + fileSeparator + "end",  #1 move files from folder to end 
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -I 5", #2 move files from folder to end, starting at #5 
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start", #3 move files from start to end 
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -M Y", #4 move files from start to end, but make the end
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start", #5 move files from start to end but test and output duplicates
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -C Y", #6 move files from start to end but test for all duplicates
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -D Y", #7 move files from start to end but fix incorrect delimination
+         "python fih.py -T " + testLocation + fileSeparator + "end" + " -S " + testLocation + fileSeparator + "start -N Successful_test_" #8 move files from start to end but rename from default
          #need to create a test that checks for identical files in the target and start location
          ]  
 
@@ -30,11 +31,12 @@ test_files = [{}, #none
               {"A" : "0","B" : "1","C" : "2","D" : "3","E" : "4","F" : "5","G" : "6","H" : "7","I" : "8","J" : "9"}, #specify different start location
               {"A" : "0","B" : "1","C" : "2","D" : "3","E" : "4","F" : "5","G" : "6","H" : "7","I" : "8","J" : "9"}, #create folder 
               {"A" : "0","B" : "0","C" : "0","D" : "3","E" : "4","F" : "5","G" : "6","H" : "7","I" : "8","J" : "9"}, #test duplicates
+              {"A" : "0","B" : "0","C" : "0","D" : "3","E" : "4","F" : "5","G" : "6","H" : "7","I" : "8","J" : "9"}, #test duplicates
               {"A-2" : "0","B-3" : "1","C-4" : "2","D-5" : "3","E-6" : "4","F-7" : "5","G-8" : "6","H-9" : "7","I-10" : "8","J-11" : "9"}, #remove deliminators
               {"A" : "0","B" : "0","C" : "0","D" : "3","E" : "4","F" : "5","G" : "6","H" : "7","I" : "8","J" : "9"} #test renaming
               ] 
-expected_results = ["","" ,"" ,"" ,"" ,"" ,"" ]
-expected_files = ["","" ,"" ,"" ,"" ,"" ,"" ]
+expected_results = ["","" ,"" ,"" ,"" ,"" ,"", "", "" ]
+expected_files = ["","" ,"" ,"" ,"" ,"" ,"", "", "" ]
 
 def create_folders():
     global testLocation 
@@ -60,7 +62,7 @@ def create_folders():
 
     return ret
 
-def create_files(file_dictionary, push_down):
+def create_files(file_dictionary, push_down, push_to_end):
     global testLocation 
     global fileSeparator
 
@@ -68,6 +70,11 @@ def create_files(file_dictionary, push_down):
 
     if push_down:
         write_location = write_location + "start" + fileSeparator
+
+    if push_to_end:
+        for i in file_dictionary:
+           with open(testLocation + fileSeparator + "end" + fileSeparator + str(i) + ".txt","w+") as file:
+               file.write(file_dictionary[i])
 
     for i in file_dictionary:
         with open(write_location + fileSeparator + str(i) + ".txt","w+") as file:
@@ -110,6 +117,7 @@ def main():
     successes = []
 
     different_start_location = False
+    push_to_end = False
     no_end_folder = False
 
 
@@ -117,10 +125,13 @@ def main():
 
         if i > 2:
             different_start_location = True
+
+        if i == 5 or i == 6:
+            push_to_end = True
             
         #create folders and files
         create_folders()
-        create_files(test_files[i], different_start_location)
+        create_files(test_files[i], different_start_location, push_to_end)
 
         if i == 4:
             no_end_folder = True
@@ -151,7 +162,8 @@ def main():
         input("Halted, waiting for review")
         #reset folder
         reset()
-
+        different_start_location = False
+        push_to_end = False
 
     #print end summary
     with open("results.txt","w+") as results:

@@ -19,7 +19,7 @@ File Iterator and Hasher - checks for duplicates, then moves and renames files i
 1. allow a -t test option to run fih-test.py  
 2. currently handles up to 1000 files because I'm lazy.  Need to make it work with arbitrary numbers  
 3. fix an issue with the check_for_duplicates_all, which looks for duplicates in all subfolders   
-4. expand the testing suite  
-	4a. test input location and output location for duplicates   
+4. expand the testing suite   
 	4b. need to make test output accurate, currently unable to actually parse success/failure  
 5. add verbose option, necessary for the success/failure determination  
+6. Need to rearrange folders so that test_location isn't necessary
