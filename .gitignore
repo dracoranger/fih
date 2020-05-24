@@ -126,3 +126,5 @@ dmypy.json
 
 #VS extensions 
 .vs/
+
+results.txt

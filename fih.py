@@ -21,6 +21,7 @@ parser.add_argument("-T", "--to", help = "to this location")
 parser.add_argument("-M", "--make", help = "create new folder if not found, Y for yes", default = '')
 parser.add_argument("-C", "--check", help = "test for all duplicates, Y for yes", default = '')
 parser.add_argument("-D", "--delim", help = "check and correct for delims and non-zero fronted numbering, Y for yes", default = '')
+parser.add_argument("-V", "--verbose", help = "Print out all actions, Y for yes", default = '')
 #parser.add_argument("-t", "--test", help = "run automated check on components to ensure functionality") #TODO, need to use this to call fih-test.py?
 
 args = parser.parse_args()
@@ -33,10 +34,13 @@ merge = args.make
 check = args.check
 #test = args.test
 delim = args.delim
+verbose = args.verbose
 
 fileSeparator = "//"
 if os.name == "nt":
     fileSeparator = "\\"
+
+ignore = ["README.md","LICENSE",".gitattributes",".gitignore", "fih.py", "fih-test.py", "results.txt"]
 
 if not target:
     print("Error: no location provided", file = sys.stderr)
@@ -93,7 +97,6 @@ def check_for_duplicates(local_files):
 
     for file in local_files:
         if not os.path.isdir(file):
-            print(file)
             #thisFile = os.path.join(currentLocation, file)
             thisFile = file
         with open(thisFile, "rb") as hashFile:
@@ -120,6 +123,8 @@ def main():
     global check
     global fro
     global delim
+    global verbose
+    global ignore
 
     currentLocation = "*"
     if fro:
@@ -127,12 +132,15 @@ def main():
 
     deliminators = ["-"," ",":"]
 
+    
+
     if check:
         check_for_duplicates_all(target)
     else:
         if not os.path.isdir(target) and merge:
             os.mkdir(target)
-            print("Created Directory "+ target)
+            if verbose:
+                print("Created Directory "+ target)
         if delim:
             files = glob.glob(currentLocation)
             for file in files:
@@ -154,7 +162,9 @@ def main():
                                 new_name = new_name + part + delim
                         else:
                             new_name = new_name + part + delim
-                    if new_name != file and file != os.path.basename(__file__):
+                    if new_name != file and file != os.path.basename(__file__) and not file in ignore:
+                        if verbose:
+                            print(file + "->" + new_name)
                         os.rename(file, new_name)
                         break
 
@@ -162,6 +172,7 @@ def main():
         curr = check_for_duplicates(local_files)
         num = 0
         #TODO check length of local_files, and make this actually logical, rather than just working for the first 1000 files
+        #need to check out target location, compare to name, build to suit.  
         for file in local_files:
             new_name = rename
             if start < 10:
@@ -170,10 +181,13 @@ def main():
                 new_name=new_name+"0"
             parts = file.split(".")  
             new_name =new_name+str(start)+"."+ parts[-1]
-            if file != os.path.basename(__file__) and not os.path.isdir(file) and file != "fih-test.py":
+            if file != os.path.basename(__file__) and not os.path.isdir(file) and not file in ignore:
                 if curr[num]:
+                    if verbose:
+                       print(file + "->" + target + fileSeparator + new_name)
                     shutil.move(file, target + fileSeparator + new_name)
                 start = start + 1
             num = num + 1
-
+            
+    print("Complete")
 main()
