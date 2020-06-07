@@ -19,4 +19,7 @@ File Iterator and Hasher - checks for duplicates, then moves and renames files i
 
 1. allow a -t test option to run fih-test.py  
 2. currently handles up to 1000 files because I'm lazy.  Need to make it work with arbitrary numbers  
-
+3. enable automatic numbering, semi-necessary for 2
+4. Add machine number reading?
+5. GUI?  (Major strech goal)
+6. Allow for more control over naming conventions?  Such as taking part of the existing name?  
