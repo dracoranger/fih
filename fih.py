@@ -15,7 +15,7 @@ TODO replace fileSeparator with os.root.join()?
 
 parser = argparse.ArgumentParser(prog = "fih.py", description="File Iterator and Hasher - checks for duplicates, then moves and renames files in numerical order")
 parser.add_argument("-N", "--name", help = "sets the name of the output", default = "Default_")
-parser.add_argument("-I", "--initial", help = "sets the initial value", type = int, default = 0)
+parser.add_argument("-I", "--initial", help = "sets the initial value", type = int, default = -1)
 parser.add_argument("-S", "--start", help = "from this location, defaults to renamer.py's current location")
 parser.add_argument("-T", "--to", help = "to this location")
 parser.add_argument("-M", "--make", help = "create new folder if not found, Y for yes", default = '')
@@ -32,9 +32,9 @@ target = args.to
 fro = args.start
 merge = args.make
 check = args.check
-#test = args.test
 delim = args.delim
 verbose = args.verbose
+#test = args.test
 
 fileSeparator = "//"
 if os.name == "nt":
@@ -132,8 +132,6 @@ def main():
 
     deliminators = ["-"," ",":"]
 
-    
-
     if check:
         check_for_duplicates_all(target)
     else:
@@ -168,19 +166,25 @@ def main():
                         os.rename(file, new_name)
                         break
 
-        local_files = glob.glob(currentLocation)
+        local_files = sorted(glob.glob(currentLocation))
         curr = check_for_duplicates(local_files)
         num = 0
-        #TODO check length of local_files, and make this actually logical, rather than just working for the first 1000 files
         #need to check out target location, compare to name, build to suit.  
+
+        if start == -1:
+            start_update = 0
+            target_files = sorted(glob.glob(target + fileSeparator + "*"))
+            for file in target_files:
+                #This is a bit easy to break, because it depends on the exact format of //path//filename_numbers.ext
+                if len(file.split("_")) > 1 and file.split(".")[-2][len(file.split("_")[-2]+"_"):].isdigit():
+                    if file.split("_")[-2].split(fileSeparator)[-1]+"_" == rename:
+                        start_update = int(file.split(".")[-2][len(file.split("_")[-2]+"_"):])
+            start = start_update
+
         for file in local_files:
             new_name = rename
-            if start < 10:
-                new_name=new_name+"0"
-            if start < 100:
-                new_name=new_name+"0"
             parts = file.split(".")  
-            new_name =new_name+str(start)+"."+ parts[-1]
+            new_name = new_name+str(start).rjust(3,"0")+"."+ parts[-1]
             if file != os.path.basename(__file__) and not os.path.isdir(file) and not file in ignore:
                 if curr[num]:
                     if verbose:
